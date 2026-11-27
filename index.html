@@ -48,7 +48,7 @@ canvas { display: block; filter: brightness(1.16) saturate(1.4); }
   align-items: center;
   justify-content: center;
   z-index: 50;
-  animation: fadeIn 0.25s ease;
+  animation: veilReveal 0.55s ease both;
 }
 #modalOverlay.show { display: flex; }
 #modalOverlay.loading #modalCard { visibility: hidden; }
@@ -60,9 +60,9 @@ canvas { display: block; filter: brightness(1.16) saturate(1.4); }
   opacity: 0.85;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+@keyframes veilReveal {
+  from { opacity: 0; backdrop-filter: blur(0); }
+  to { opacity: 1; backdrop-filter: blur(4px); }
 }
 
 #modalCard {
@@ -83,12 +83,12 @@ canvas { display: block; filter: brightness(1.16) saturate(1.4); }
   text-align: center;
   padding: 24px;
   box-sizing: border-box;
-  animation: popIn 0.3s ease;
+  animation: cardSettle 0.65s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
-@keyframes popIn {
-  from { transform: scale(0.85); opacity: 0; }
-  to   { transform: scale(1); opacity: 1; }
+@keyframes cardSettle {
+  from { transform: translateY(28px) scale(0.97); opacity: 0; filter: blur(8px); }
+  to   { transform: translateY(0) scale(1); opacity: 1; filter: blur(0); }
 }
 
 #photoFrame {
@@ -104,7 +104,61 @@ canvas { display: block; filter: brightness(1.16) saturate(1.4); }
   box-shadow: 0 0 0 3px rgba(255, 183, 200, 0.24), 0 0 0 6px rgba(255, 226, 207, 0.12), 0 14px 38px rgba(255, 90, 150, 0.3);
 }
 #photoFrame::before {
-  display: none;
+  content: "";
+  position: absolute;
+  inset: 8px;
+  z-index: 2;
+  border-radius: 14px;
+  pointer-events: none;
+  background: linear-gradient(110deg, transparent 25%, rgba(255,255,255,0.62) 48%, transparent 68%);
+  transform: translateX(-140%);
+  animation: photoShine 1.25s 0.62s ease-out both;
+}
+
+#photoFrame {
+  transform-style: preserve-3d;
+  box-shadow: 0 0 0 3px rgba(255, 183, 200, 0.24), 0 0 0 6px rgba(255, 226, 207, 0.12), 0 14px 38px rgba(255, 90, 150, 0.3);
+  animation: frameUnfold 0.9s 0.12s cubic-bezier(0.18, 0.78, 0.22, 1) both, frameGlow 1.4s 0.2s ease-out both;
+}
+
+#photoFrame img {
+  animation: imageIris 0.85s 0.3s cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
+#modalCaption {
+  animation: captionReveal 0.55s 0.55s ease-out both;
+}
+
+@keyframes frameUnfold {
+  0% { opacity: 0; transform: perspective(1100px) rotateY(-18deg) rotateX(8deg) translateY(34px) scale(0.88); }
+  65% { opacity: 1; transform: perspective(1100px) rotateY(3deg) rotateX(-1deg) translateY(-4px) scale(1.015); }
+  100% { opacity: 1; transform: perspective(1100px) rotateY(0) rotateX(0) translateY(0) scale(1); }
+}
+
+@keyframes frameGlow {
+  0%, 100% { filter: brightness(1); }
+  35% { filter: brightness(1.35); }
+}
+
+@keyframes imageIris {
+  0% { opacity: 0; clip-path: inset(48% 0 48% 0 round 14px); transform: scale(1.08); filter: blur(12px) brightness(1.5); }
+  100% { opacity: 1; clip-path: inset(0 0 0 0 round 14px); transform: scale(1); filter: blur(0) brightness(1); }
+}
+
+@keyframes photoShine {
+  to { transform: translateX(140%); }
+}
+
+@keyframes captionReveal {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #modalOverlay, #modalCard, #photoFrame, #photoFrame img, #photoFrame::before, #modalCaption {
+    animation-duration: 0.01ms;
+    animation-delay: 0ms;
+  }
 }
 #photoFrame::after {
   content: "✦";
@@ -225,6 +279,196 @@ canvas { display: block; filter: brightness(1.16) saturate(1.4); }
     font-size: 28px;
   }
 }
+/* ===== KHUNG ẢNH MỚI: HỘP TRƯNG BÀY ÁNH NGỌC ===== */
+#modalOverlay {
+  background: radial-gradient(ellipse at center, rgba(90, 24, 55, 0.48), rgba(4, 3, 16, 0.9) 72%);
+  backdrop-filter: blur(12px) saturate(1.25);
+  animation: galleryBackdrop 0.5s ease both;
+}
+
+#modalCard {
+  width: min(94vw, 940px);
+  min-height: 0;
+  max-height: 94vh;
+  padding: clamp(34px, 5vw, 58px) 20px 28px;
+  overflow: visible;
+  border: 1px solid rgba(255, 221, 230, 0.32);
+  border-radius: 30px;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255, 121, 170, 0.19), transparent 54%),
+    linear-gradient(145deg, rgba(39, 19, 43, 0.96), rgba(10, 8, 26, 0.97));
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.62), 0 0 70px rgba(239, 93, 153, 0.2), inset 0 1px rgba(255, 255, 255, 0.12);
+  animation: galleryCardOpen 0.72s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+#modalCard::before {
+  content: "✦  ·  ❀  ·  ✦";
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 218, 229, 0.72);
+  font: 13px/1 sans-serif;
+  letter-spacing: 0.55em;
+  white-space: nowrap;
+}
+
+#photoFrame {
+  width: min(82%, 650px);
+  max-height: min(67vh, 720px);
+  padding: 9px;
+  overflow: visible;
+  border: 1px solid rgba(255, 239, 220, 0.9);
+  border-radius: 28px;
+  background: linear-gradient(135deg, #fff2d9 0%, #f7acc1 18%, #9c4269 43%, #f8c8c2 66%, #fff0d4 82%, #b85d7b 100%);
+  box-shadow: 0 0 0 1px rgba(255, 197, 214, 0.48), 0 0 0 7px rgba(242, 151, 183, 0.09), 0 22px 65px rgba(0, 0, 0, 0.52), 0 0 42px rgba(255, 115, 167, 0.26);
+  transform-style: preserve-3d;
+  animation: jewelFrameOpen 0.95s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+#photoFrame::before {
+  inset: -7px;
+  z-index: 3;
+  border: 1px solid rgba(255, 224, 231, 0.42);
+  border-radius: 33px;
+  background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.72) 48%, transparent 66%);
+  transform: translateX(-150%) rotate(8deg);
+  animation: jewelSweep 1.1s 0.45s ease-out both;
+}
+#photoFrame::after {
+  content: "✧";
+  top: -17px;
+  right: -17px;
+  width: 38px;
+  height: 38px;
+  color: #fff8e9;
+  font-size: 19px;
+  border: 1px solid rgba(255, 240, 219, 0.95);
+  background: radial-gradient(circle at 30% 25%, #ffd8df, #b94f77 72%);
+  box-shadow: 0 0 0 5px rgba(255, 215, 224, 0.1), 0 0 22px rgba(255, 165, 192, 0.55);
+  animation: jewelTwinkle 1.4s 0.55s ease both;
+}
+#photoFrame img {
+  max-height: min(calc(67vh - 18px), 702px);
+  border-radius: 20px;
+  object-fit: contain;
+  background: #160c1c;
+  animation: jewelImageReveal 0.88s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+#modalCaption {
+  margin-top: 24px;
+  padding: 13px 25px;
+  max-width: min(88%, 620px);
+  color: #fff0f4;
+  font-size: clamp(16px, 2.4vw, 20px);
+  letter-spacing: 0.02em;
+  border: 1px solid rgba(255, 205, 222, 0.36);
+  border-radius: 999px;
+  background: linear-gradient(110deg, rgba(118, 41, 75, 0.52), rgba(43, 22, 54, 0.72));
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.22), inset 0 1px rgba(255, 255, 255, 0.12);
+  animation: captionFloatIn 0.55s 0.48s ease both;
+}
+#modalCaption::before, #modalCaption::after { display: none; }
+#modalNumber {
+  margin-top: 13px;
+  color: rgba(255, 224, 234, 0.7);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+#modalEmoji {
+  color: #ffe1eb;
+  text-shadow: 0 0 28px rgba(255, 131, 177, 0.8);
+  animation: jewelImageReveal 0.65s ease both;
+}
+#modalOverlay.loading #photoFrame,
+#modalOverlay.loading #photoFrame img,
+#modalOverlay.loading #modalCaption,
+#modalOverlay.loading #modalNumber { animation-play-state: paused; }
+
+@keyframes galleryBackdrop {
+  from { opacity: 0; backdrop-filter: blur(0); }
+  to { opacity: 1; backdrop-filter: blur(12px) saturate(1.25); }
+}
+@keyframes galleryCardOpen {
+  from { opacity: 0; transform: translateY(24px) scale(0.94); filter: blur(8px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+@keyframes jewelFrameOpen {
+  0% { opacity: 0; transform: perspective(1000px) rotateX(16deg) rotateY(-9deg) scale(0.76); filter: brightness(1.8) blur(5px); }
+  65% { opacity: 1; transform: perspective(1000px) rotateX(-2deg) rotateY(2deg) scale(1.025); filter: brightness(1.15) blur(0); }
+  100% { opacity: 1; transform: perspective(1000px) rotateX(0) rotateY(0) scale(1); filter: brightness(1) blur(0); }
+}
+@keyframes jewelImageReveal {
+  from { opacity: 0; clip-path: inset(50% 12% round 24px); transform: scale(1.08); filter: blur(15px) saturate(1.5); }
+  to { opacity: 1; clip-path: inset(0 0 round 20px); transform: scale(1); filter: blur(0) saturate(1); }
+}
+@keyframes jewelSweep { to { transform: translateX(150%) rotate(8deg); } }
+@keyframes jewelTwinkle {
+  0%, 100% { transform: scale(0.65) rotate(-35deg); opacity: 0.55; }
+  45% { transform: scale(1.2) rotate(25deg); opacity: 1; }
+}
+@keyframes captionFloatIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@media (max-width: 600px) {
+  #modalCard { width: 96vw; min-height: 0; max-height: 94vh; padding: 40px 10px 22px; border-radius: 24px; }
+  #photoFrame { width: 86vw; max-height: 66vh; padding: 7px; border-radius: 23px; }
+  #photoFrame img { max-height: calc(66vh - 14px); border-radius: 16px; }
+  #modalCaption { max-width: 92%; margin-top: 18px; padding: 11px 17px; font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #modalOverlay, #modalCard, #photoFrame, #photoFrame img, #photoFrame::before, #photoFrame::after, #modalCaption, #modalEmoji {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+  }
+}
+
+/* Khung ảnh kiểu hộp trưng bày viền vàng hồng */
+#modalCard {
+  border-color: rgba(255, 222, 205, 0.52);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255, 188, 190, 0.23), transparent 48%),
+    linear-gradient(145deg, rgba(48, 23, 45, 0.98), rgba(12, 8, 26, 0.98));
+  box-shadow: 0 32px 100px rgba(0, 0, 0, 0.68), 0 0 55px rgba(244, 143, 173, 0.22), inset 0 1px rgba(255, 245, 226, 0.2);
+}
+#photoFrame {
+  padding: 11px;
+  border: 1px solid #ffe8cc;
+  border-radius: 25px;
+  background: linear-gradient(135deg, #fff4d9 0%, #f8c99e 12%, #bd6681 29%, #ffe1c6 43%, #8d365d 57%, #f3b6ac 74%, #fff0d3 88%, #b75b78 100%);
+  box-shadow: 0 0 0 2px rgba(255, 231, 196, 0.2), 0 0 0 7px rgba(242, 160, 181, 0.1), 0 24px 65px rgba(0, 0, 0, 0.55), 0 0 45px rgba(255, 157, 185, 0.3), inset 0 0 0 1px rgba(255,255,255,0.55);
+}
+#photoFrame::before {
+  inset: 5px;
+  z-index: 2;
+  border: 1px solid rgba(255, 241, 220, 0.58);
+  border-radius: 19px;
+  background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.68) 48%, transparent 66%);
+}
+#photoFrame::after {
+  top: -13px;
+  right: -13px;
+  width: 34px;
+  height: 34px;
+  color: #fff6de;
+  border-color: rgba(255, 244, 220, 0.95);
+  background: radial-gradient(circle at 30% 25%, #fff0ce, #db8b9f 48%, #913d63 100%);
+  box-shadow: 0 0 0 4px rgba(255, 225, 210, 0.12), 0 0 24px rgba(255, 204, 163, 0.58);
+}
+#photoFrame img {
+  border-radius: 16px;
+  box-shadow: 0 0 0 1px rgba(255, 244, 229, 0.2);
+}
+#modalCaption {
+  border-color: rgba(255, 224, 202, 0.42);
+  background: linear-gradient(110deg, rgba(116, 48, 76, 0.68), rgba(39, 22, 53, 0.82));
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.28), inset 0 1px rgba(255, 244, 224, 0.18), 0 0 22px rgba(248, 153, 182, 0.12);
+}
+@media (max-width: 600px) {
+  #photoFrame { padding: 8px; border-radius: 21px; }
+  #photoFrame::before { border-radius: 15px; }
+  #photoFrame img { border-radius: 13px; }
+}
 </style>
 </head>
 <body>
@@ -336,7 +580,7 @@ function generate(){
       edge: sp.k,
       phase: Math.random() * TAU,
       speed: 0.006 + Math.random() * 0.01,
-      glint: Math.random() < (0.002 + sp.k * 0.018),
+      glint: Math.random() < (0.004 + sp.k * 0.025),
       target: null
     });
   }
@@ -754,7 +998,7 @@ function makeCakeTargetParticle(x, y, alphaVal, sourceR, sourceG, sourceB){
     flicker: Math.random() < 0.06,
     flickerPhase: Math.random()*TAU,
     flickerSpeed: 0.0015 + Math.random()*0.003,
-    glint: Math.random() < (0.002 + density * 0.018)
+    glint: Math.random() < (0.006 + density * 0.035)
   };
 }
 
@@ -991,15 +1235,15 @@ function ease(t){
 function drawCakeSparkle(x, y, phase, glint, now){
   if(!glint) return;
   const twinkle = Math.max(0, Math.sin(phase * 1.3 + now * 0.0045));
-  if(twinkle < 0.94) return;
+  if(twinkle < 0.9) return;
 
-  // Tiny, occasional four-point glint, matching the heart's soft particle sparkle.
-  const strength = (twinkle - 0.94) / 0.06;
-  const flare = 2 + strength * 2;
+  // Soft, occasional four-point glints add a little sparkle to the cake.
+  const strength = (twinkle - 0.9) / 0.1;
+  const flare = 2 + strength * 2.5;
   ctx.save();
   ctx.globalCompositeOperation = "lighter";
-  ctx.globalAlpha = strength * 0.28;
-  ctx.strokeStyle = "rgba(255, 235, 245, 0.8)";
+  ctx.globalAlpha = strength * 0.24;
+  ctx.strokeStyle = "rgba(255, 226, 208, 0.82)";
   ctx.lineWidth = 0.7;
   ctx.beginPath();
   ctx.moveTo(x - flare, y); ctx.lineTo(x + flare, y);
@@ -1009,7 +1253,7 @@ function drawCakeSparkle(x, y, phase, glint, now){
 }
 
 const drifters = [];
-const xSparkles = Array.from({length: 14}, (_, i) => ({
+const xSparkles = Array.from({length: 18}, (_, i) => ({
   path: i % 2,
   phase: Math.random(),
   speed: 0.00008 + Math.random() * 0.00005,
@@ -1171,7 +1415,7 @@ function draw(now){
 
     p.phase += p.speed * dtk;
     const edgeGlow = 0.52 + p.edge * 0.53;
-    const sparkle = (Math.sin(p.phase * 1.7 + now * 0.0022) + 1) * (0.09 + p.edge * 0.16);
+    const sparkle = (Math.sin(p.phase * 1.7 + now * 0.0022) + 1) * (0.105 + p.edge * 0.18);
     const twinkle = Math.max(0, Math.sin(p.phase * 1.3 + now * 0.0045)) * edgeGlow;
     const alpha = Math.min(0.94, (p.baseO * 0.82 + sparkle + twinkle * 0.18) * a);
 
@@ -1350,15 +1594,15 @@ const EMOJIS = ["✦", "✧", "✶", "✷", "✹", "❈", "❉", "⋆", "⭒", "
 const PHOTO_COUNT = 18;
 const WISHES = [
   "Chúc mừng sinh nhật chị Linh nhé ✨",
-  "Mong mọi điều tốt đẹp nhất sẽ luôn đến bên cạnh 💖",
+  "Mong mọi điều tốt đẹp nhất sẽ luôn đến bên cạnh chị 💖",
   "Chúc tuổi mới thật nhiều niềm vui, may mắn và yêu thương 🎂",
-  "Hy vọng sang tuổi mới chị mà em biết sẽ ngày càng vui vẻ hơn🌟",
+  "Hy vọng sang tuổi mới chị em sẽ ngày càng vui vẻ hơn🌟",
   "Chúc chị có một sinh nhật đáng nhớ và thật ấm áp 💌",
-  "Đi làm nhớ ăn sáng đủ kẻo lại đau đầu nhé chị 🌠",
+  "Chúc chị sẽ có một ngày thật vui vẻ và nhận được thật nhiều lời chúc nhé 🌠",
   "Chúc chị luôn được yêu thương và gặp thật nhiều điều ngọt ngào 💕",
   "Tuổi mới thật xinh đẹp, bình an và thành công nhé 🌷",
   "Chúc cho chị luôn giữ được năng lượng tích cực và luôn cười như em biết 😊",
-  "Dêm đừng suy nhiều nhé, cứ vui vẻ mà nghỉ ngơi thôi ✨",
+  "Đêm đừng suy nhiều nhé, cứ vui vẻ mà nghỉ ngơi thôin nha ✨",
   "Chúc chị hôm nay dậy sẽ nhận được nhiều sự bất ngờ nhé 🎁",
   "Chúc những điều hạnh phúc nhất sẽ luôn ở cạnh chị nha 💫",
   "Mong trái tim chị luôn đầy ắp yêu thương và niềm vui 💗",
@@ -1403,6 +1647,10 @@ function openModal(emoji){
 
   const showImage = () => {
     modalOverlay.classList.remove("loading");
+    photoFrame.style.animationPlayState = "running";
+    img.style.animationPlayState = "running";
+    modalCaption.style.animationPlayState = "running";
+    modalNumber.style.animationPlayState = "running";
   };
 
   img.onload = showImage;
