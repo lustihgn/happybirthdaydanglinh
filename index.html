@@ -531,7 +531,7 @@ function resize(){
 window.addEventListener("resize", resize);
 resize();
 
-const COUNT = 13200;
+const COUNT = 11000;
 const particles = [];
 
 const HEART_CENTER_RGB = [255, 205, 220];
@@ -1002,7 +1002,7 @@ function makeCakeTargetParticle(x, y, alphaVal, sourceR, sourceG, sourceB){
   };
 }
 
-const CAKE_MAX = 20000;
+const CAKE_MAX = 18000;
 const cakeTargets = [];
 function generateCakeTargets(){
   cakeTargets.length = 0;
@@ -1025,7 +1025,7 @@ function generateCakeTargets(){
         density = 0.7 + Math.pow(u, 0.35) * 0.3;
       }
       density = density + edgeDarkenFactor(x, y) * 0.78;
-      density = Math.min(1, density);
+      density = Math.min(1, density * 1.12);
       if(Math.random() < density) cakeTargets.push(makeCakeTargetParticle(x,y,aVal,sourceR,sourceG,sourceB));
     }
   }
@@ -1697,10 +1697,10 @@ function spawnEmoji(){
   }
 
   // Kích thước hạt rơi: chỉnh số 1.4 (điện thoại) và 0.9 (máy tính) để to/nhỏ hơn
-  const mobileScale = Math.min(window.innerWidth, window.innerHeight) <= 700 ? 1.12 : 0.72;
+  const mobileScale = Math.min(window.innerWidth, window.innerHeight) <= 700 ? 1.0 : 0.65;
   const size = (isFlower
-    ? 22 + Math.random() * 10
-    : (14 + Math.random() * 10) * 1.5) * mobileScale;
+    ? 18 + Math.random() * 8
+    : (12 + Math.random() * 8) * 1.2) * mobileScale;
   const duration = isFlower
     ? 9 + Math.random() * 4
     : 7 + Math.random() * 5;
